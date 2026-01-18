@@ -3,7 +3,7 @@
  * Persistent storage for embeddings
  */
 
-import { supabase } from './supabase';
+import { supabase } from '../supabase';
 import { llmRouter } from '@/lib/llm';
 
 export interface VectorDocument {

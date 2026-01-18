@@ -75,7 +75,7 @@ export class LLMRouter {
      */
     async checkProviderAvailability(): Promise<Record<ProviderName, boolean>> {
         const cacheKey = 'provider-availability';
-        const cached = cache.get<Record<ProviderName, boolean>>(cacheKey);
+        const cached = await cache.get<Record<ProviderName, boolean>>(cacheKey);
 
         if (cached) {
             return cached;
@@ -94,7 +94,7 @@ export class LLMRouter {
         );
 
         // Cache for 5 minutes
-        cache.set(cacheKey, availability as Record<ProviderName, boolean>, 300);
+        await cache.set(cacheKey, availability as Record<ProviderName, boolean>, 300);
 
         return availability as Record<ProviderName, boolean>;
     }

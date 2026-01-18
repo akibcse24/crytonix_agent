@@ -21,7 +21,6 @@ export class MemoryManager {
     constructor(agentId: string, maxShortTermSize: number = 50) {
         this.agentId = agentId;
         this.maxShortTermSize = maxShortTermSize;
-        this.loadFromCache();
     }
 
     /**
@@ -191,21 +190,31 @@ export class MemoryManager {
     /**
      * Save memory to cache
      */
-    private saveToCache(): void {
+    /**
+     * Save memory to cache
+     */
+    private async saveToCache(): Promise<void> {
         const cacheKey = `agent-memory-${this.agentId}`;
-        cache.set(cacheKey, this.getState(), 3600 * 24); // 24 hour TTL
+        await cache.set(cacheKey, this.getState(), 3600 * 24); // 24 hour TTL
     }
 
     /**
      * Load memory from cache
      */
-    private loadFromCache(): void {
+    private async loadFromCache(): Promise<void> {
         const cacheKey = `agent-memory-${this.agentId}`;
-        const cached = cache.get<AgentMemory>(cacheKey);
+        const cached = await cache.get<AgentMemory>(cacheKey);
 
         if (cached) {
             this.setState(cached);
         }
+    }
+
+    /**
+     * Get memory statistics
+     */
+    async init(): Promise<void> {
+        await this.loadFromCache();
     }
 
     /**
@@ -216,8 +225,8 @@ export class MemoryManager {
             shortTermCount: this.shortTermMemory.length,
             longTermCount: this.longTermMemory.length,
             entityCount: this.entityGraph.length,
-            oldestMessage: this.shortTermMemory[0]?.createdAt,
-            newestMessage: this.shortTermMemory[this.shortTermMemory.length - 1]?.createdAt,
+            // oldestMessage: this.shortTermMemory[0]?.timestamp, // Removed invalid property
+            // newestMessage: this.shortTermMemory[this.shortTermMemory.length - 1]?.timestamp, // Removed invalid property
         };
     }
 }

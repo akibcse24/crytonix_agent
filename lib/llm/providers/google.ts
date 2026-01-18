@@ -52,7 +52,7 @@ export class GoogleProvider implements LLMProvider {
             const chat = model.startChat({
                 history: history.slice(0, -1),
                 ...(systemInstruction && {
-                    systemInstruction: { parts: [{ text: systemInstruction }] },
+                    systemInstruction: systemInstruction, // SDK handles string or Content
                 }),
             });
 
