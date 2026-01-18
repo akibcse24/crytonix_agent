@@ -34,7 +34,7 @@ class SupabaseVectorStore {
                 content: doc.content,
                 embedding: JSON.stringify(embedding), // Store as JSON
                 metadata: doc.metadata || {},
-            });
+            } as any);
 
         if (error) {
             throw new Error(`Failed to add document: ${error.message}`);
@@ -67,7 +67,7 @@ class SupabaseVectorStore {
             query_embedding: JSON.stringify(queryEmbedding),
             match_threshold: 0.7,
             match_count: topK,
-        });
+        } as any);
 
         if (error) {
             console.error('Vector search error:', error);
