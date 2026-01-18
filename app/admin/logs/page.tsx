@@ -13,7 +13,7 @@ const mockLogs = [
 
 export default function LogsPage() {
     const [search, setSearch] = useState('');
-    const [level Filter, setLevelFilter] = useState('all');
+    const [levelFilter, setLevelFilter] = useState('all');
 
     const filteredLogs = mockLogs.filter((log) => {
         const matchesSearch = log.message.toLowerCase().includes(search.toLowerCase());

@@ -45,7 +45,8 @@ async function getUser(id: string) {
     return user;
 }
 
-export default async function UserDetailPage({ params }: { params: { id: string } }) {
+export default async function UserDetailPage(props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     const user = await getUser(params.id);
 
     return (

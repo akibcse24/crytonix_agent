@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
 
         // Get knowledge base statistics
         const kbStats = knowledgeBase.getStats();
-        const vectorStats = vectorStore.getStats();
+        const vectorStats = await vectorStore.getStats();
 
         return NextResponse.json({
             system: {

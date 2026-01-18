@@ -51,9 +51,7 @@ export class GoogleProvider implements LLMProvider {
 
             const chat = model.startChat({
                 history: history.slice(0, -1),
-                ...(systemInstruction && {
-                    systemInstruction: systemInstruction, // SDK handles string or Content
-                }),
+                ...(systemInstruction && { systemInstruction }),
             });
 
             const result = await chat.sendMessage(lastMessage.parts[0].text);
@@ -113,9 +111,7 @@ export class GoogleProvider implements LLMProvider {
 
             const chat = model.startChat({
                 history: history.slice(0, -1),
-                ...(systemInstruction && {
-                    systemInstruction: { parts: [{ text: systemInstruction }] },
-                }),
+                ...(systemInstruction && { systemInstruction }),
             });
 
             const result = await chat.sendMessageStream(lastMessage.parts[0].text);

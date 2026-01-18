@@ -5,36 +5,39 @@
 
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { rateLimit } from '@/lib/security/rate-limit';
+import { checkRateLimit } from '@/lib/security/rate-limit';
 import { logSecurityEvent } from '@/lib/monitoring/logger';
-
-// Admin rate limiter - stricter limits
-const adminLimiter = rateLimit({
-    interval: 60 * 1000, // 1 minute
-    uniqueTokenPerInterval: 500,
-});
 
 /**
  * Admin security middleware
  */
 export async function adminSecurityMiddleware(request: NextRequest) {
-    const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown';
+    const ip = request.headers.get('x-forwarded-for') || 'unknown';
     const { pathname } = request.nextUrl;
 
     // 1. Rate Limiting - Admin routes are strictly rate limited
     try {
-        await adminLimiter.check(request, 20); // 20 requests per minute for admin
-    } catch (error) {
-        logSecurityEvent({
-            event: 'admin_rate_limit_exceeded',
-            ipAddress: ip,
-            details: { pathname },
-            severity: 'high',
-        });
+        const { success } = await checkRateLimit(`admin:${ip}`, 20, '60 s');
 
+        if (!success) {
+            logSecurityEvent({
+                event: 'admin_rate_limit_exceeded',
+                ipAddress: ip,
+                details: { pathname },
+                severity: 'high',
+            });
+
+            return NextResponse.json(
+                { error: 'Too many requests. Please try again later.' },
+                { status: 429 }
+            );
+        }
+    } catch (error) {
+        console.error('Rate limit error:', error);
+        // Fail open or closed? Closed for admin.
         return NextResponse.json(
-            { error: 'Too many requests. Please try again later.' },
-            { status: 429 }
+            { error: 'Security check failed' },
+            { status: 500 }
         );
     }
 

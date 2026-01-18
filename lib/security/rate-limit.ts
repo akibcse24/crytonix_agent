@@ -53,48 +53,65 @@ function inMemoryRateLimit(identifier: string, limit: number, windowMs: number):
 /**
  * Rate limit middleware
  */
+/**
+ * Check rate limit for an identifier
+ */
+export async function checkRateLimit(identifier: string, limitCount: number = 10, windowString: string = '10 s'): Promise<{ success: boolean; limit: number; remaining: number; reset: number }> {
+    if (ratelimit) {
+        // Create a specific limiter for this check if passing loose params is needed, 
+        // but for now reusing global or creating new one might be needed if window changes.
+        // For simplicity, using the global one for now, or creating a new temporary one? 
+        // Creating new Ratelimit instances is cheap-ish.
+
+        const limiter = new Ratelimit({
+            redis: redis!,
+            limiter: Ratelimit.slidingWindow(limitCount, windowString as any),
+            analytics: true,
+            prefix: 'crytonix:ratelimit',
+        });
+
+        return await limiter.limit(identifier);
+    } else {
+        // Fallback
+        const windowMs = windowString.endsWith('m') ? parseInt(windowString) * 60000 : 10000; // rough parsing
+        const allowed = inMemoryRateLimit(identifier, limitCount, windowMs);
+        return {
+            success: allowed,
+            limit: limitCount,
+            remaining: allowed ? limitCount - 1 : 0,
+            reset: Date.now() + windowMs
+        };
+    }
+}
+
+/**
+ * Rate limit middleware
+ */
 export async function rateLimit(req: NextRequest): Promise<NextResponse | null> {
     // Get identifier (IP address or user ID)
-    const ip = req.ip ?? req.headers.get('x-forwarded-for') ?? 'anonymous';
+    const ip = req.headers.get('x-forwarded-for') || 'anonymous';
     const identifier = `ip:${ip}`;
 
-    if (ratelimit) {
-        // Use Upstash Redis rate limiting
-        const { success, limit, reset, remaining } = await ratelimit.limit(identifier);
+    const { success, limit, reset, remaining } = await checkRateLimit(identifier, 10, '10 s');
 
-        if (!success) {
-            return NextResponse.json(
-                {
-                    error: 'Rate limit exceeded',
-                    limit,
-                    reset: new Date(reset).toISOString(),
+    if (!success) {
+        return NextResponse.json(
+            {
+                error: 'Rate limit exceeded',
+                limit,
+                reset: new Date(reset).toISOString(),
+            },
+            {
+                status: 429,
+                headers: {
+                    'X-RateLimit-Limit': limit.toString(),
+                    'X-RateLimit-Remaining': remaining.toString(),
+                    'X-RateLimit-Reset': new Date(reset).toISOString(),
                 },
-                {
-                    status: 429,
-                    headers: {
-                        'X-RateLimit-Limit': limit.toString(),
-                        'X-RateLimit-Remaining': remaining.toString(),
-                        'X-RateLimit-Reset': new Date(reset).toISOString(),
-                    },
-                }
-            );
-        }
-
-        // Add rate limit headers to response
-        return null; // Proceed with request
-    } else {
-        // Fallback to in-memory rate limiting
-        const allowed = inMemoryRateLimit(identifier, 10, 10000);
-
-        if (!allowed) {
-            return NextResponse.json(
-                { error: 'Rate limit exceeded (in-memory fallback)' },
-                { status: 429 }
-            );
-        }
-
-        return null;
+            }
+        );
     }
+    return null;
 }
 
 /**

@@ -13,7 +13,7 @@ export interface VectorDocument {
     metadata?: Record<string, any>;
 }
 
-class SupabaseVectorStore {
+export class VectorStore {
     /**
      * Add a single document with embedding
      */
@@ -74,7 +74,7 @@ class SupabaseVectorStore {
             return [];
         }
 
-        return (data || []).map((item: any) => ({
+        return ((data as any[]) || []).map((item: any) => ({
             id: item.id,
             content: item.content,
             embedding: JSON.parse(item.embedding),
@@ -130,7 +130,30 @@ class SupabaseVectorStore {
             throw new Error(`Failed to clear documents: ${error.message}`);
         }
     }
+
+    /**
+     * Get store statistics
+     */
+    async getStats(): Promise<{ documentCount: number; usingVectorDB: boolean }> {
+        try {
+            const { count, error } = await supabase
+                .from('embeddings')
+                .select('*', { count: 'exact', head: true });
+
+            if (error) {
+                console.error('Failed to get stats:', error);
+                return { documentCount: 0, usingVectorDB: false };
+            }
+
+            return {
+                documentCount: count || 0,
+                usingVectorDB: true
+            };
+        } catch (error) {
+            return { documentCount: 0, usingVectorDB: false };
+        }
+    }
 }
 
 // Export singleton
-export const vectorStore = new SupabaseVectorStore();
+export const vectorStore = new VectorStore();

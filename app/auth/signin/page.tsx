@@ -6,7 +6,9 @@ import { Terminal, Github } from 'lucide-react';
 import { useTheme } from '@/components/ThemeProvider';
 import { useSearchParams } from 'next/navigation';
 
-export default function SignInPage() {
+import { Suspense } from 'react';
+
+function SignInContent() {
     const { theme } = useTheme();
     const searchParams = useSearchParams();
     const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
@@ -16,8 +18,8 @@ export default function SignInPage() {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-zinc-950 to-black">
             <div
                 className={`max-w-md w-full p-8 rounded-lg border ${isCyberpunk
-                        ? 'bg-black border-cyan-500/30'
-                        : 'bg-white border-purple-200 glass'
+                    ? 'bg-black border-cyan-500/30'
+                    : 'bg-white border-purple-200 glass'
                     }`}
             >
                 {/* Logo & Title */}
@@ -41,8 +43,8 @@ export default function SignInPage() {
                     <Button
                         onClick={() => signIn('github', { callbackUrl })}
                         className={`w-full ${isCyberpunk
-                                ? 'bg-cyan-600 hover:bg-cyan-500 text-black font-mono'
-                                : 'bg-gray-900 hover:bg-gray-800 text-white'
+                            ? 'bg-cyan-600 hover:bg-cyan-500 text-black font-mono'
+                            : 'bg-gray-900 hover:bg-gray-800 text-white'
                             }`}
                     >
                         <Github className="w-5 h-5 mr-2" />
@@ -52,8 +54,8 @@ export default function SignInPage() {
                     <Button
                         onClick={() => signIn('google', { callbackUrl })}
                         className={`w-full ${isCyberpunk
-                                ? 'bg-cyan-600 hover:bg-cyan-500 text-black font-mono'
-                                : 'bg-white hover:bg-gray-50 text-gray-900 border border-gray-300'
+                            ? 'bg-cyan-600 hover:bg-cyan-500 text-black font-mono'
+                            : 'bg-white hover:bg-gray-50 text-gray-900 border border-gray-300'
                             }`}
                     >
                         <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -89,5 +91,13 @@ export default function SignInPage() {
                 </p>
             </div>
         </div>
+    );
+}
+
+export default function SignInPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+            <SignInContent />
+        </Suspense>
     );
 }

@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
                 name: agentConfig.name,
                 role: agentConfig.role as any,
                 systemPrompt: `You are ${agentConfig.name}, a ${agentConfig.role} agent.`,
-                provider: agentConfig.provider || 'openai',
+                provider: (agentConfig.provider || 'openai') as any, // Cast to any to avoid strict type check against ProviderName enum
                 model: agentConfig.model || 'gpt-4o-mini',
                 tools: agentConfig.tools || [],
                 isActive: true,

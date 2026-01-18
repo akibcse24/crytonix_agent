@@ -8,6 +8,7 @@ import { auth } from '@/auth';
 import { logAdminAction, AdminAction } from './audit';
 import { validateCSRFToken } from './security';
 import { logSecurityEvent } from '@/lib/monitoring/logger';
+import { rateLimit } from '@/lib/security/rate-limit';
 
 type AdminHandler = (request: NextRequest, context?: any) => Promise<NextResponse>;
 
@@ -93,6 +94,9 @@ export function secureAdminAPI(
             }
 
             // 4. Execute handler
+            const rateLimitRes = await rateLimit(request);
+            if (rateLimitRes) return rateLimitRes;
+
             const startTime = Date.now();
             const response = await handler(request, context);
             const duration = Date.now() - startTime;
@@ -103,7 +107,7 @@ export function secureAdminAPI(
                 userEmail: session.user.email || 'unknown',
                 action,
                 resource,
-                ipAddress: request.ip || request.headers.get('x-forwarded-for') || 'unknown',
+                ipAddress: request.headers.get('x-forwarded-for') || 'unknown',
                 userAgent: request.headers.get('user-agent') || 'unknown',
                 success: response.status < 400,
                 error: response.status >= 400 ? `HTTP ${response.status}` : undefined,

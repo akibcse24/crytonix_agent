@@ -1,0 +1,77 @@
+
+> crytonix-ai@1.0.0 build
+> prisma generate && next build
+
+Prisma schema loaded from prisma\schema.prisma.
+warn On `provider = "postgresql"`, preview feature "fullTextSearch" has been renamed to "fullTextSearchPostgres". Learn more at https://pris.ly/d/fts-postgres.
+warn Preview feature "fullTextIndex" is deprecated. The functionality can be used without specifying it as a preview feature.
+
+✔ Generated Prisma Client (v7.2.0) to .\node_modules\@prisma\client in 99ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+   ▲ Next.js 15.1.4
+   - Environments: .env.local, .env
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./app/admin/logs/page.tsx
+Error:   [31mx[0m Expected ',', got 'Filter'
+    ,-[[36;1;4mG:\Nodejs project\ai_agents\app\admin\logs\page.tsx[0m:16:1]
+ [2m13[0m | 
+ [2m14[0m | export default function LogsPage() {
+ [2m15[0m |     const [search, setSearch] = useState('');
+ [2m16[0m |     const [level Filter, setLevelFilter] = useState('all');
+    : [35;1m                 ^^^^^^[0m
+ [2m17[0m | 
+ [2m18[0m |     const filteredLogs = mockLogs.filter((log) => {
+ [2m18[0m |         const matchesSearch = log.message.toLowerCase().includes(search.toLowerCase());
+    `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/admin/logs/page.tsx
+
+./lib/llm/providers/anthropic.ts
+Module not found: Can't resolve '@anthropic-ai/sdk'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./lib/llm/index.ts
+./app/api/status/route.ts
+
+./lib/security/rate-limit.ts
+Module not found: Can't resolve '@upstash/ratelimit'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./lib/admin/security.ts
+./app/api/admin/csrf/route.ts
+
+./lib/tools/web-tools.ts
+Module not found: Can't resolve 'cheerio'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./lib/tools/index.ts
+./app/api/status/route.ts
+
+./lib/tools/web-tools.ts
+Module not found: Can't resolve '@mozilla/readability'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./lib/tools/index.ts
+./app/api/status/route.ts
+
+
+> Build failed because of webpack errors

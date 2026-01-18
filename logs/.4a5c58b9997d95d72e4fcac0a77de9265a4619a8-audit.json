@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "G:\\Nodejs project\\ai_agents\\logs\\.4a5c58b9997d95d72e4fcac0a77de9265a4619a8-audit.json",
+    "files": [
+        {
+            "date": 1768761840644,
+            "name": "G:\\Nodejs project\\ai_agents\\logs\\combined-2026-01-19.log",
+            "hash": "aa2a497083f67476c1658d605638fced6cd3519e3fe0c2b729aef7f38f2be683"
+        }
+    ],
+    "hashType": "sha256"
+}

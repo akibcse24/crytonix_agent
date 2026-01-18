@@ -9,7 +9,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  // url      = env("DATABASE_URL")
   // Connection pooling optimized for Render hobby plan
 
   // Max 5 connections to stay within resource limits
@@ -30,7 +30,7 @@ model User {
   sessions      Session[]
   agents        Agent[]
   threads       Thread[]
-  provider Keys  ProviderKey[]
+  providerKeys  ProviderKey[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
