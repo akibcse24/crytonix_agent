@@ -1,26 +1,117 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Glassmorphism Light Theme Colors */
+    --background: 250 100% 98%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 262 83% 58%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.75rem;
+  }
+
+  .dark,
+  [data-theme="cyberpunk"] {
+    /* Cyberpunk Command Theme Colors */
+    --background: 200 100% 3%;
+    --foreground: 180 100% 90%;
+    --card: 200 100% 4%;
+    --card-foreground: 180 100% 90%;
+    --popover: 200 100% 4%;
+    --popover-foreground: 180 100% 90%;
+    --primary: 180 100% 50%;
+    --primary-foreground: 200 100% 10%;
+    --secondary: 200 30% 15%;
+    --secondary-foreground: 180 100% 90%;
+    --muted: 200 30% 15%;
+    --muted-foreground: 180 50% 60%;
+    --accent: 180 100% 40%;
+    --accent-foreground: 200 100% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 180 50% 20%;
+    --input: 180 50% 20%;
+    --ring: 180 100% 50%;
+    --radius: 0.5rem;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Glassmorphism Effects */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 217, 255, 0.3);
+}
+
+/* Custom Scrollbar - Cyberpunk Theme */
+[data-theme="cyberpunk"] .scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+[data-theme="cyberpunk"] .scrollbar-track-black::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+[data-theme="cyberpunk"] .scrollbar-thumb-cyan-900::-webkit-scrollbar-thumb {
+  background: #164e63;
+  border-radius: 4px;
+}
+
+[data-theme="cyberpunk"] .scrollbar-thumb-cyan-900::-webkit-scrollbar-thumb:hover {
+  background: #0e7490;
+}
+
+/* Custom Scrollbar - Light Theme */
+:root .scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+:root .scrollbar-track-light::-webkit-scrollbar-track {
+  background: #f8f9fa;
+}
+
+:root .scrollbar-thumb-purple::-webkit-scrollbar-thumb {
+  background: #a78bfa;
+  border-radius: 4px;
+}
+
+:root .scrollbar-thumb-purple::-webkit-scrollbar-thumb:hover {
+  background: #8b5cf6;
 }
