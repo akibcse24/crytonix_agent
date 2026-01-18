@@ -11,6 +11,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
   // Connection pooling optimized for Render hobby plan
+
   // Max 5 connections to stay within resource limits
 }
 
